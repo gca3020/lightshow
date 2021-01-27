@@ -1,0 +1,11 @@
+[Unit]
+Description=Lightshow Monitor
+After=dbus.socket
+Requires=dbus.socket
+
+[Service]
+ExecStart=/usr/bin/lightshow
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
