@@ -16,20 +16,19 @@ build: clean
 		main.go
 
 install:
-	rm -f /usr/local/bin/lightshow
-	cp -a dist/linux_amd64/lightshow /usr/local/bin/lightshow
-	mkdir -p /usr/local/lib/systemd/system
-	cp -a init/lightshow.service /usr/local/lib/systemd/system/
-	systemctl daemon-reload
-	systemctl enable lightshow
-	systemctl start lightshow
+	cp -a dist/linux_amd64/lightshow ${HOME}/.local/bin/lightshow
+	mkdir -p ${HOME}/.config/systemd/user/
+	cp -a init/lightshow.service ${HOME}/.config/systemd/user/
+	systemctl --user daemon-reload
+	systemctl --user enable lightshow
+	systemctl --user start lightshow
 
 uninstall:
-	systemctl disable lightshow
-	systemctl stop lightshow
-	rm -rf /usr/local/lib/systemd/system/lightshow.service
-	systemctl daemon-reload
-	rm -f /usr/local/bin/lightshow
+	systemctl --user disable lightshow
+	systemctl --user stop lightshow
+	rm -rf ${HOME}/.config/systemd/user/lightshow.service
+	systemctl --user daemon-reload
+	rm -f ${HOME}/.local/bin/lightshow
 
 clean: .PHONY
 	rm -rf dist

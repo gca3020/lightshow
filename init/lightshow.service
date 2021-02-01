@@ -4,9 +4,8 @@ After=dbus.socket
 Requires=dbus.socket
 
 [Service]
-ExecStart=/usr/local/bin/lightshow
+ExecStart=%h/.local/bin/lightshow
 Restart=on-failure
-User=gamey
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
