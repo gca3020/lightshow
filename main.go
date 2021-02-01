@@ -2,14 +2,20 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"os"
+	"time"
 
+	"github.com/gca3020/adalight"
+	"github.com/gca3020/adalight/effects"
 	"github.com/godbus/dbus/v5"
 )
 
 func main() {
-	fmt.Println("Hello, world")
+	monitor()
+}
 
+func monitor() {
 	conn, err := dbus.SessionBus()
 	if err != nil {
 		fmt.Println("Failed to connect to session bus:", err)
@@ -17,11 +23,10 @@ func main() {
 	}
 	defer conn.Close()
 
+	light := adalight.New("/dev/ttyUSB0", 115200, 106)
+
 	var rules = []string{
-		"type='signal',member='Notify',path='/org/freedesktop/Notifications',destination='org.freedesktop.Notifications'",
 		"type='method_call',member='Notify',path='/org/freedesktop/Notifications',destination='org.freedesktop.Notifications'",
-		"type='method_return',member='Notify',path='/org/freedesktop/Notifications',destination='org.freedesktop.Notifications'",
-		"type='error',member='Notify',path='/org/freedesktop/Notifications',destination='org.freedesktop.Notifications'",
 	}
 	var flag uint = 0
 
@@ -35,6 +40,9 @@ func main() {
 	conn.Eavesdrop(c)
 	fmt.Println("Monitoring notifications")
 	for v := range c {
-		fmt.Println(v)
+		if v.Headers[dbus.FieldMember].Value().(string) == "Notify" {
+			fmt.Println("Notification received")
+			light.Run(effects.NewRamp(color.NRGBA{R: 0xFF, A: 0xFF}, time.Second))
+		}
 	}
 }
