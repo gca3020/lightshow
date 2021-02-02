@@ -42,7 +42,10 @@ func monitor() {
 	for v := range c {
 		if v.Headers[dbus.FieldMember].Value().(string) == "Notify" {
 			fmt.Println("Notification received")
-			light.Run(effects.NewRamp(color.NRGBA{R: 0xFF, A: 0xFF}, time.Second))
+			err := light.Run(effects.NewRamp(color.NRGBA{R: 0xFF, A: 0xFF}, time.Second))
+			if err != nil {
+				fmt.Println("Error while running effect:", err)
+			}
 		}
 	}
 }
